@@ -1,0 +1,31 @@
+{
+  "name": "q-stream",
+  "version": "0.0.0",
+  "description": "simple promise-based streams",
+  "main": "q-stream.js",
+  "scripts": {
+    "test": "mocha -R spec q-stream.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/justinvdm/q-stream.git"
+  },
+  "keywords": [
+    "stream",
+    "promise",
+    "q"
+  ],
+  "author": "justinvdm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/justinvdm/q-stream/issues"
+  },
+  "homepage": "https://github.com/justinvdm/q-stream",
+  "devDependencies": {
+    "mocha": "^1.19.0"
+  },
+  "dependencies": {
+    "q": "^1.0.1",
+    "readable-stream": "^1.0.27-1"
+  }
+}

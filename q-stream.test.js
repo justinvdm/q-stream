@@ -1,0 +1,2 @@
+describe("q-stream", function() {
+});
