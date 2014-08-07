@@ -11,13 +11,20 @@ function qs(fn, opts) {
   if (typeof fn != 'function') opts = fn || {}, fn = identity;
   if (!('objectMode' in opts)) opts.objectMode = true;
 
+  var flush = noop;
   var d = q.defer();
   var t = new QTransform(opts);
   t._transform = transform(t, fn);
 
   t._flush = function(done) {
-    d.resolve();
-    done();
+    q.try(flush)
+     .then(function(result) { d.resolve(result); })
+     .nodeify(done);
+  };
+
+  t.flush = function(fn) {
+    flush = fn || noop;
+    return t;
   };
 
   t.on('error', function(e) {
@@ -49,6 +56,10 @@ function isStream(obj) {
 
 function identity(v) {
   return v;
+}
+
+
+function noop() {
 }
 
 

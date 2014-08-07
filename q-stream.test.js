@@ -164,4 +164,43 @@ describe("q-stream", function() {
       .delay(0)
       .then(function() { assert(s.promise().isFulfilled()); });
   });
+
+  it("should fulfill its promise with its flush function's result", function() {
+    var r = qs();
+
+    var p = r
+      .pipe(qs())
+      .flush(function() {
+        return q()
+          .delay(0)
+          .then(function() { return 23; });
+      })
+      .promise()
+      .then(function(result) {
+        assert.equal(result, 23);
+      });
+
+    r.push(1);
+    r.push(null);
+    return p;
+  });
+
+  it("should fail its promise if a flush error occurs", function() {
+    var r = qs();
+
+    var p = r
+      .pipe(qs())
+      .flush(err(':('))
+      .promise()
+      .then(err('promise should not have been fulfilled'), errback);
+
+    function errback(e) {
+      assert(e instanceof Error);
+      assert.equal(e.message, ':(');
+    }
+
+    r.push(1);
+    r.push(null);
+    return p;
+  });
 });
