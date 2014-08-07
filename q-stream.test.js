@@ -1,5 +1,6 @@
 var q = require('q');
 var assert = require('assert');
+var domain = require('domain');
 var qs = require('./q-stream');
 var Transform = require('readable-stream/transform');
 
@@ -24,6 +25,10 @@ describe("q-stream", function() {
     return function() {
       throw new Error(message);
     };
+  }
+
+  function badFulfill() {
+    return err('promise should not have been fulfilled');
   }
 
 
@@ -140,7 +145,7 @@ describe("q-stream", function() {
     var p = r
       .pipe(qs(err(':(')))
       .promise()
-      .then(err('promise should not have been fulfilled'), errback);
+      .then(badFulfill, errback);
 
     function errback(e) {
       assert(e instanceof Error);
@@ -176,8 +181,8 @@ describe("q-stream", function() {
           .then(function() { return 23; });
       })
       .promise()
-      .then(function(result) {
-        assert.equal(result, 23);
+      .then(function(v) {
+        assert.equal(v, 23);
       });
 
     r.push(1);
@@ -192,7 +197,7 @@ describe("q-stream", function() {
       .pipe(qs())
       .flush(err(':('))
       .promise()
-      .then(err('promise should not have been fulfilled'), errback);
+      .then(badFulfill, errback);
 
     function errback(e) {
       assert(e instanceof Error);
@@ -202,5 +207,21 @@ describe("q-stream", function() {
     r.push(1);
     r.push(null);
     return p;
+  });
+
+  it("should rethrow errors if no promise was asked for", function(done) {
+    domain
+      .create()
+      .on('error', function(e) {
+        assert(e instanceof Error);
+        assert.equal(e.message, ':(');
+        done();
+      })
+      .run(function() {
+        var r = qs();
+        r.pipe(qs(err(':(')));
+        r.push(1);
+        r.push(null);
+      });
   });
 });

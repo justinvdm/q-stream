@@ -11,8 +11,11 @@ function qs(fn, opts) {
   if (typeof fn != 'function') opts = fn || {}, fn = identity;
   if (!('objectMode' in opts)) opts.objectMode = true;
 
-  var flush = noop;
+  var rethrow = true;
   var d = q.defer();
+  d.promise.done();
+
+  var flush = noop;
   var t = new QTransform(opts);
   t._transform = transform(t, fn);
 
@@ -32,6 +35,10 @@ function qs(fn, opts) {
   });
 
   t.promise = function() {
+    if (rethrow) {
+      d = q.defer();
+      rethrow = false;
+    }
     return d.promise;
   };
 
