@@ -224,4 +224,44 @@ describe("q-stream", function() {
         r.push(null);
       });
   });
+
+  it("should keep 'error' listeners working on their own", function(done) {
+    var r = qs();
+
+    r.pipe(qs(err(':(')))
+     .on('error', function(e) {
+       assert(e instanceof Error);
+       assert.equal(e.message, ':(');
+       done();
+     });
+
+    r.push(1);
+    r.push(null);
+  });
+
+  it("should keep 'error' listeners working when a promise is used", function() {
+    var r = qs();
+    var d1 = q.defer();
+    var d2 = q.defer();
+
+    r.pipe(qs(err(':(')))
+     .on('error', function(e) {
+       check(e);
+       d1.resolve();
+     })
+     .promise()
+     .then(badFulfill(), function(e) {
+       check(e);
+       d2.resolve();
+     });
+
+    function check(e) {
+      assert(e instanceof Error);
+      assert.equal(e.message, ':(');
+    }
+
+    r.push(1);
+    r.push(null);
+    return q.all([d1.promise, d2.promise]);
+  });
 });
