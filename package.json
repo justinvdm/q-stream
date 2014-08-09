@@ -1,6 +1,6 @@
 {
   "name": "q-stream",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "simple promise-based streams",
   "main": "q-stream.js",
   "scripts": {
