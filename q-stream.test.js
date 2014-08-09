@@ -190,6 +190,16 @@ describe("q-stream", function() {
     return p;
   });
 
+  it("should use the stream as the flush function's context", function(done) {
+    var t = qs()
+      .flush(function() {
+        assert.strictEqual(t, this);
+        done();
+      });
+
+    t.end();
+  });
+
   it("should fail its promise if a flush error occurs", function() {
     var r = qs();
 

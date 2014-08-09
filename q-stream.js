@@ -25,7 +25,7 @@ function qs(fn, opts) {
   };
 
   t.flush = function(fn) {
-    flush = fn || noop;
+    flush = (fn || noop).bind(t);
     return t;
   };
 
