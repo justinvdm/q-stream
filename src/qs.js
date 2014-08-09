@@ -5,8 +5,11 @@ module.exports = qs;
 
 
 function qs(fn, opts) {
+  var sw;
+  if (typeof fn != 'function') sw = opts, opts = fn, fn = sw;
+
+  fn = fn || identity;
   opts = opts || {};
-  if (typeof fn != 'function') opts = fn || {}, fn = identity;
   if (!('objectMode' in opts)) opts.objectMode = true;
 
   var promised = false;

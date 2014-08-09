@@ -42,13 +42,13 @@ $ npm install q-stream
 
 ## api
 
-### `qs([fn], [opts])`
+### `qs([opts], [fn])`
 
 Creates a new q-stream based transform stream.
 
-If `fn` is given, is is used as the transform stream's `_transform` function. `fn` should take the form `function(chunk, enc)`, where `chunk` is the current chunk to be transformed and `enc` is the encoding type if `chunk` is a `string`. In contrast to the original `_transform` function, no callback should be provided. Instead, the return value is used as the result of the chunk's transformation. `fn` may also return a promise fulfulled with the chunk's transformation result. Similar to the original `_transform` function, the transformation result is optional, so a return value does not need to be given.
-
 If `opts` is given, it is passed through to the base `Transform` constructor as the options to use to create the stream. In contrast to the base `Transform` constructor and [through2](https://www.npmjs.org/package/through2), q-stream sets `objectMode` to `true` by default (since this mode is used so often).
+
+If `fn` is given, is is used as the transform stream's `_transform` function. `fn` should take the form `function(chunk, enc)`, where `chunk` is the current chunk to be transformed and `enc` is the encoding type if `chunk` is a `string`. In contrast to the original `_transform` function, no callback should be provided. Instead, the return value is used as the result of the chunk's transformation. `fn` may also return a promise fulfulled with the chunk's transformation result. Similar to the original `_transform` function, the transformation result is optional, so a return value does not need to be given.
 
 ### `.flush(fn)`
 

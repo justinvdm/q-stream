@@ -81,6 +81,17 @@ describe("qs", function() {
     r.push(null);
   });
 
+  it("should allow both a function and options to be given", function(done) {
+    var t = qs({objectMode: true}, function(d) {
+      assert.equal(d, 1);
+      assert(t._readableState.objectMode);
+      assert(t._writableState.objectMode);
+      done();
+    });
+
+    t.write(1);
+  });
+
   it("should allow its transform functions to return promises", function(done) {
     var results = [];
     var r = tr();
