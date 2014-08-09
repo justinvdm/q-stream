@@ -2,35 +2,21 @@ var q = require('q');
 var assert = require('assert');
 var domain = require('domain');
 var qs = require('../src');
+var utils = require('./utils');
 var Transform = require('readable-stream/transform');
 
 
 describe("qs", function() {
-  function call(fn) {
-    fn();
-  }
-
   function identity(d, enc, next) {
     next(null, d);
   }
 
   function tr(transform, flush) {
     var t = new Transform({objectMode: true});
-    t._flush = flush || call;
+    if (flush) t._flush = flush;
     t._transform = transform || identity;
     return t;
   }
-
-  function err(message) {
-    return function() {
-      throw new Error(message);
-    };
-  }
-
-  function badFulfill() {
-    return err('promise should not have been fulfilled');
-  }
-
 
   it("should create a transform stream", function(done) {
     var results = [];
@@ -140,11 +126,11 @@ describe("qs", function() {
   });
 
   it("should fail its promise if an error occurs", function() {
-    var t = qs(err(':('));
+    var t = qs(utils.err(':('));
 
     var p = t
       .promise()
-      .then(badFulfill, errback);
+      .then(utils.badFulfill, errback);
 
     function errback(e) {
       assert(e instanceof Error);
@@ -197,11 +183,11 @@ describe("qs", function() {
   });
 
   it("should reject its promise if a flush error occurs", function() {
-    var t = qs().flush(err(':('));
+    var t = qs().flush(utils.err(':('));
 
     var p = t
       .promise()
-      .then(badFulfill, errback);
+      .then(utils.badFulfill, errback);
 
     t.end();
 
@@ -222,12 +208,12 @@ describe("qs", function() {
         done();
       })
       .run(function() {
-        qs(err(':(')).write(1);
+        qs(utils.err(':(')).write(1);
       });
   });
 
   it("should keep 'error' listeners working on their own", function(done) {
-    qs(err(':('))
+    qs(utils.err(':('))
      .on('error', function(e) {
        assert(e instanceof Error);
        assert.equal(e.message, ':(');
@@ -240,14 +226,14 @@ describe("qs", function() {
     var d1 = q.defer();
     var d2 = q.defer();
 
-    var t = qs(err(':('))
+    var t = qs(utils.err(':('))
      .on('error', function(e) {
        check(e);
        d1.resolve();
      });
 
     t.promise()
-     .then(badFulfill(), function(e) {
+     .then(utils.badFulfill(), function(e) {
        check(e);
        d2.resolve();
      });
