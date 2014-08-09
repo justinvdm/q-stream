@@ -1,9 +1,7 @@
 var q = require('q');
 var util = require('util');
 var Transform = require('readable-stream/transform');
-
 module.exports = qs;
-qs.isStream = isStream;
 
 
 function qs(fn, opts) {
@@ -53,11 +51,6 @@ function transform(t, fn) {
     q.fcall(fn.bind(this), d, enc)
      .nodeify(next);
   };
-}
-
-
-function isStream(obj) {
-  return typeof (obj || 0).pipe == 'function';
 }
 
 

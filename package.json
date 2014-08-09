@@ -2,9 +2,9 @@
   "name": "q-stream",
   "version": "0.1.0",
   "description": "simple promise-based streams",
-  "main": "q-stream.js",
+  "main": "./src/index.js",
   "scripts": {
-    "test": "mocha -R spec q-stream.test.js"
+    "test": "mocha -R spec ./test"
   },
   "repository": {
     "type": "git",

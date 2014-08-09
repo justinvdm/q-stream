@@ -1,11 +1,11 @@
 var q = require('q');
 var assert = require('assert');
 var domain = require('domain');
-var qs = require('./q-stream');
+var qs = require('../src');
 var Transform = require('readable-stream/transform');
 
 
-describe("q-stream", function() {
+describe("qs", function() {
   function call(fn) {
     fn();
   }
