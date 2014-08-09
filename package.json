@@ -12,6 +12,9 @@
   },
   "keywords": [
     "stream",
+    "streams2",
+    "through",
+    "transform",
     "promise",
     "q"
   ],
@@ -26,6 +29,6 @@
   },
   "dependencies": {
     "q": "^1.0.1",
-    "readable-stream": "^1.0.27-1"
+    "readable-stream": ">=1.0.27-1 <1.1.0-0"
   }
 }
