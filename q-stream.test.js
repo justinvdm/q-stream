@@ -110,23 +110,12 @@ describe("q-stream", function() {
   });
 
   it("should use the stream as the transform function's context", function(done) {
-    var r = tr();
-
     var s = qs(function(d) {
       assert.strictEqual(this, s);
-      return d;
-    });
-
-    var t = tr(null, function() {
       done();
     });
 
-    r.pipe(s)
-     .pipe(t);
-
-    r.push(1);
-    r.push(2);
-    r.push(null);
+    s.write(1);
   });
 
   it("should use object mode by default", function() {
@@ -140,10 +129,9 @@ describe("q-stream", function() {
   });
 
   it("should fail its promise if an error occurs", function() {
-    var r = qs();
+    var t = qs(err(':('));
 
-    var p = r
-      .pipe(qs(err(':(')))
+    var p = t
       .promise()
       .then(badFulfill, errback);
 
@@ -152,8 +140,7 @@ describe("q-stream", function() {
       assert.equal(e.message, ':(');
     }
 
-    r.push(1);
-    r.push(null);
+    t.write(1);
     return p;
   });
 
@@ -171,22 +158,20 @@ describe("q-stream", function() {
   });
 
   it("should fulfill its promise with its flush function's result", function() {
-    var r = qs();
-
-    var p = r
-      .pipe(qs())
+    var t = qs()
       .flush(function() {
         return q()
           .delay(0)
           .then(function() { return 23; });
-      })
+      });
+
+    var p = t
       .promise()
       .then(function(v) {
         assert.equal(v, 23);
       });
 
-    r.push(1);
-    r.push(null);
+    t.end();
     return p;
   });
 
@@ -200,22 +185,20 @@ describe("q-stream", function() {
     t.end();
   });
 
-  it("should fail its promise if a flush error occurs", function() {
-    var r = qs();
+  it("should reject its promise if a flush error occurs", function() {
+    var t = qs().flush(err(':('));
 
-    var p = r
-      .pipe(qs())
-      .flush(err(':('))
+    var p = t
       .promise()
       .then(badFulfill, errback);
+
+    t.end();
 
     function errback(e) {
       assert(e instanceof Error);
       assert.equal(e.message, ':(');
     }
 
-    r.push(1);
-    r.push(null);
     return p;
   });
 
@@ -228,50 +211,43 @@ describe("q-stream", function() {
         done();
       })
       .run(function() {
-        var r = qs();
-        r.pipe(qs(err(':(')));
-        r.push(1);
-        r.push(null);
+        qs(err(':(')).write(1);
       });
   });
 
   it("should keep 'error' listeners working on their own", function(done) {
-    var r = qs();
-
-    r.pipe(qs(err(':(')))
+    qs(err(':('))
      .on('error', function(e) {
        assert(e instanceof Error);
        assert.equal(e.message, ':(');
        done();
-     });
-
-    r.push(1);
-    r.push(null);
+     })
+     .write(1);
   });
 
   it("should keep 'error' listeners working when a promise is used", function() {
-    var r = qs();
     var d1 = q.defer();
     var d2 = q.defer();
 
-    r.pipe(qs(err(':(')))
+    var t = qs(err(':('))
      .on('error', function(e) {
        check(e);
        d1.resolve();
-     })
-     .promise()
+     });
+
+    t.promise()
      .then(badFulfill(), function(e) {
        check(e);
        d2.resolve();
      });
+
+    t.write(1);
 
     function check(e) {
       assert(e instanceof Error);
       assert.equal(e.message, ':(');
     }
 
-    r.push(1);
-    r.push(null);
     return q.all([d1.promise, d2.promise]);
   });
 });
