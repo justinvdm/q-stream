@@ -1,31 +1,25 @@
 var qs = require('./qs');
-var domain = require('domain');
 var _concat = require('concat-stream');
 module.exports = concat;
 
 
-function concat(s, opts) {
-  var result;
-  var t = qs(opts);
-  opts = opts || {};
-
-  contain(t, function() {
-    t.flush(function() { return result; });
-
-    s.pipe(_concat(opts, function(d) {
-      result = d;
-      t.write(d);
-      t.end();
-    }));
+function concat(opts) {
+  var t = qs(opts, function(d) { r.push(d); })
+  .flush(function() {
+    var result = w.getBody();
+    this.push(result);
+    return result;
   });
 
+  var r = qs()
+    .on('error', error);
+
+  var w = r.pipe(_concat(opts || {}))
+    .on('error', error);
+
+  function error(e) {
+    t.emit('error', e);
+  }
+
   return t;
-}
-
-
-function contain(t, fn) {
-  return domain
-    .create()
-    .on('error', function(e) { t.emit('error', e); })
-    .run(fn);
 }

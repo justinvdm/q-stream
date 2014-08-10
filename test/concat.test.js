@@ -7,7 +7,7 @@ describe("qs.concat", function() {
   it("should concatenate data", function(done) {
     var t = qs();
 
-    qs.concat(t)
+    t.pipe(qs.concat())
      .pipe(qs(function(d) {
        assert.deepEqual(d, [1, 2, 3]);
        done();
@@ -22,7 +22,7 @@ describe("qs.concat", function() {
   it("should resolve with the concatenated data", function() {
     var t = qs();
 
-    var p = qs.concat(t)
+    var p = t.pipe(qs.concat())
      .promise()
      .then(function(d) {
        assert.deepEqual(d, [1, 2, 3]);
@@ -39,7 +39,7 @@ describe("qs.concat", function() {
   it("should take responsiblity of concat errors", function() {
     var t = qs();
 
-    var p = qs.concat(t)
+    var p = t.pipe(qs.concat())
      .promise()
      .then(utils.badFulfill(), function(e) {
        assert(e instanceof Error);
@@ -54,7 +54,7 @@ describe("qs.concat", function() {
   });
 
   it("should pass through the given stream options", function() {
-    var t = qs.concat(qs(), {objectMode: false});
+    var t = qs.concat({objectMode: false});
     assert(!t._readableState.objectMode);
     assert(!t._writableState.objectMode);
   });
