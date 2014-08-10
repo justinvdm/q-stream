@@ -1,5 +1,5 @@
 var qs = module.exports = require('./qs');
-qs.concat = require('./qs.concat');
-qs.oneshot = require('./qs.oneshot');
-qs.isStream = require('./qs.isStream');
-qs.streamify = require('./qs.streamify');
+qs.concat = require('./concat');
+qs.oneshot = require('./oneshot');
+qs.isStream = require('./isStream');
+qs.streamify = require('./streamify');

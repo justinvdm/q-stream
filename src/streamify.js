@@ -1,11 +1,11 @@
-var qs = require('./qs');
-var isStream = require('./qs.isStream');
+var oneshot = require('./oneshot');
+var isStream = require('./isStream');
 module.exports = streamify;
 
 
 function streamify(v) {
   if (isStream(v)) return v;
-  var t = qs.oneshot();
+  var t = oneshot();
   t.write(v);
   return t;
 }
