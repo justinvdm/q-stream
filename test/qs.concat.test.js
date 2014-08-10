@@ -52,4 +52,10 @@ describe("qs.concat", function() {
 
     return p;
   });
+
+  it("should pass through the given stream options", function() {
+    var t = qs.concat(qs(), {objectMode: false});
+    assert(!t._readableState.objectMode);
+    assert(!t._writableState.objectMode);
+  });
 });

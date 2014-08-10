@@ -6,9 +6,8 @@ module.exports = concat;
 
 function concat(s, opts) {
   var result;
+  var t = qs(opts);
   opts = opts || {};
-
-  var t = qs();
 
   contain(t, function() {
     t.flush(function() { return result; });
