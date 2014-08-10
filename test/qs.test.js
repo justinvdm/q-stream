@@ -130,7 +130,7 @@ describe("qs", function() {
 
     var p = t
       .promise()
-      .then(utils.badFulfill, errback);
+      .then(utils.badFulfill(), errback);
 
     function errback(e) {
       assert(e instanceof Error);
@@ -187,7 +187,7 @@ describe("qs", function() {
 
     var p = t
       .promise()
-      .then(utils.badFulfill, errback);
+      .then(utils.badFulfill(), errback);
 
     t.end();
 

@@ -41,7 +41,7 @@ describe("qs.concat", function() {
 
     var p = qs.concat(t)
      .promise()
-     .then(utils.badFulfill, function(e) {
+     .then(utils.badFulfill(), function(e) {
        assert(e instanceof Error);
      });
 
