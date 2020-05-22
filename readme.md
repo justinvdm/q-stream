@@ -1,5 +1,7 @@
 # q-stream
 
+> **note** For now, this project is deprecated. I no longer use or work on it, and doubt others are using it. If by any chance you were using this, and would like to see more of it in some form, let me know: justnvdm(at)gmail.com
+
 ![Build Status](https://api.travis-ci.org/justinvdm/q-stream.png)
 
 simple promise-based streams.
